@@ -25,6 +25,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/go-kit/log"
@@ -47,6 +48,12 @@ func SanitizeValue(s string) (float64, error) {
 		return value, nil
 	}
 	resultErr = fmt.Sprintf("%s", err)
+
+	if dateValue, err := time.Parse("2006-01-02T15:04:05", s); err == nil {
+		return float64(dateValue.Unix()), nil
+	} else {
+		resultErr = resultErr + "; " + fmt.Sprintf("%s", err)
+	}
 
 	if boolValue, err := strconv.ParseBool(s); err == nil {
 		if boolValue {
