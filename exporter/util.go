@@ -18,7 +18,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"math"
 	"net/http"
 	"net/url"
@@ -195,7 +194,7 @@ func (f *JSONFetcher) FetchJSON(endpoint string) ([]byte, error) {
 	}
 
 	defer func() {
-		if _, err := io.Copy(ioutil.Discard, resp.Body); err != nil {
+		if _, err := io.Copy(io.Discard, resp.Body); err != nil {
 			level.Error(f.logger).Log("msg", "Failed to discard body", "err", err)
 		}
 		resp.Body.Close()
@@ -216,7 +215,7 @@ func (f *JSONFetcher) FetchJSON(endpoint string) ([]byte, error) {
 		return nil, errors.New(resp.Status)
 	}
 
-	data, err := ioutil.ReadAll(resp.Body)
+	data, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
